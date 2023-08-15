@@ -25,6 +25,7 @@
 - 行为型
     - [发布-订阅模式](https://github.com/wsafight/design-patterns-implemented/blob/master/behavioral/pub-sub.md)
     - [状态模式](https://github.com/wsafight/design-patterns-implemented/blob/master/behavioral/state.md)
+    - [中介模式](https://github.com/wsafight/design-patterns-implemented/blob/master/behavioral/mediation.md)
 
 ## 更新记录
 - 2023-08-15 重启该项目
