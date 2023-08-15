@@ -21,6 +21,7 @@
 - 结构型
     - [代理模式](https://github.com/wsafight/design-patterns-implemented/blob/master/structure/proxy.md)
     - [享元模式](https://github.com/wsafight/design-patterns-implemented/blob/master/structure/flyweight.md)
+    - [适配器模式](https://github.com/wsafight/design-patterns-implemented/blob/master/structure/adapter.md)
 - 行为型
     - [发布-订阅模式](https://github.com/wsafight/design-patterns-implemented/blob/master/behavioral/pub-sub.md)
     - [状态模式](https://github.com/wsafight/design-patterns-implemented/blob/master/behavioral/state.md)
