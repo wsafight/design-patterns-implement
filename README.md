@@ -17,11 +17,13 @@
 无论从那个维度上来说，我需要一份清单。来指导我写更好的代码。
 ## 目录
 - 创建型
-    - [单例模式](https://github.com/wsafight/design-patterns-implemented/issues/1)
+    - [单例模式](https://github.com/wsafight/design-patterns-implemented/blob/master/create/singleton.md)
 - 结构型
-    - [代理模式](https://github.com/wsafight/design-patterns-implemented/issues/2)
+    - [代理模式](https://github.com/wsafight/design-patterns-implemented/blob/master/structure/proxy.md)
+    - [享元模式](https://github.com/wsafight/design-patterns-implemented/blob/master/structure/flyweight.md)
 - 行为型
-    - [发布-订阅模式]
+    - [发布-订阅模式](https://github.com/wsafight/design-patterns-implemented/blob/master/behavioral/pub-sub.md)
+    - [状态模式](https://github.com/wsafight/design-patterns-implemented/blob/master/behavioral/state.md)
 
 ## 更新记录
 - 2023-08-15 重启该项目
