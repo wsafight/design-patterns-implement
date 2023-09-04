@@ -67,11 +67,36 @@ class Controller {
 export default Controller;
 ```
 
+
 此时控制器中有一个极简的缓存 tmpCache，发布订阅工具。以及服务端请求方法 api。开发者只需要导入 Controller 类即可使用。如果后续需要更加复杂的缓存或者改造 api（如切换为 fetch）请求方法。开发者可以很快的进行替换。而无需改造对应文件。
+
+```typescript
+import axios from 'redaxios';
+
+const createApi = ($controller) => {
+    
+  const api = axios.create({
+    baseURL: "/api",
+  });
+
+  const getOld = api.get
+
+  api.get = (...params) => {
+    // 如果出发缓存直接返回
+    // if (xxx) {
+    //   return $controller.tmpCache
+    // }
+    return getOld(...params)
+  }
+
+
+  return api;
+};
+```
 
 ### 添加用户类
 
-用户的信息和操作可以说是对象交互的核心，将其放入控制器中。
+登录的用户信息以及对应操作可以说是对象交互的核心，将其放入控制器中。
 
 ```typescript
 class User {
@@ -88,14 +113,14 @@ class User {
 
   // 登录
   login(params) {
-    $controller.api("/login", params).then((response) => {
+    $controller.api.post("/login", params).then((response) => {
       // 处理授权以及 user 信息
     });
   }
 
   // 退出
   logout() {
-    $controller.api("/logout").then(() => {
+    $controller.api.post("/logout").then(() => {
       // 清理对应数据
       $controller.tmpCache = {};
       this.user = null;
@@ -104,7 +129,7 @@ class User {
 
   // 设置用户配置
   setSetting(params) {
-    return $controller.api("/setting", params).then(() => {
+    return $controller.api.post("/setting", params).then(() => {
       this.user.setting = params;
     });
   }
@@ -149,8 +174,11 @@ class OrderService extends BasicService {
     if (this.cache.has(OrderService.xxxKey)) {
         return this.cache.get(OrderService.xxxKey);
     }
-    let orders = await this.api('xxxxx');
-    // 业务处理
+    let orders = await this.api.get('xxxxx');
+    
+    // 业务处理，包括其他的业务开发
+    order = order.map()
+
     this.cache.set(OrderService.xxxKey, orders);
 
     // 可以发送全局事件
