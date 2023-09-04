@@ -67,28 +67,25 @@ class Controller {
 export default Controller;
 ```
 
-
 此时控制器中有一个极简的缓存 tmpCache，发布订阅工具。以及服务端请求方法 api。开发者只需要导入 Controller 类即可使用。如果后续需要更加复杂的缓存或者改造 api（如切换为 fetch）请求方法。开发者可以很快的进行替换。而无需改造对应文件。
 
 ```typescript
-import axios from 'redaxios';
+import axios from "redaxios";
 
 const createApi = ($controller) => {
-    
   const api = axios.create({
     baseURL: "/api",
   });
 
-  const getOld = api.get
+  const getOld = api.get;
 
   api.get = (...params) => {
     // 如果出发缓存直接返回
     // if (xxx) {
     //   return $controller.tmpCache
     // }
-    return getOld(...params)
-  }
-
+    return getOld(...params);
+  };
 
   return api;
 };
@@ -147,6 +144,8 @@ class Controller {
 }
 ```
 
+此时控制器已经具备前端开发中“大部分”功能了，如数据缓存，数据请求，登录用户信息处理等。大部分情况下，中介类也基本够用了。至于其他的工具类，除非 80% 的业务都会用到，否则不建议添加到此类中去。但对于这些工具做一层简单的封装也是必要的（考虑后续成本）。
+
 ### 添加业务类
 
 此时控制器有了用户信息，多种缓存，请求方法等。我们可以通过注入来实现其他业务。
@@ -160,36 +159,36 @@ class BasicService {
 }
 
 class OrderService extends BasicService {
-  static xxxKey = 'xxxx';
+  static xxxKey = "xxxx";
 
   constructor($controller) {
-    super($controller)
+    super($controller);
     // 使用全局缓存
     this.cache = $controller.xxxCache;
     // 或者构建一个新的 cache 挂载到 controller 上
-    this.cache = $controller.getCreatedCache('order', XXXCache);
+    this.cache = $controller.getCreatedCache("order", XXXCache);
   }
 
   getOrders = async () => {
     if (this.cache.has(OrderService.xxxKey)) {
-        return this.cache.get(OrderService.xxxKey);
+      return this.cache.get(OrderService.xxxKey);
     }
-    let orders = await this.api.get('xxxxx');
-    
+    let orders = await this.api.get("xxxxx");
+
     // 业务处理，包括其他的业务开发
-    order = order.map()
+    order = order.map();
 
     this.cache.set(OrderService.xxxKey, orders);
 
     // 可以发送全局事件
-    this.bus.emit('getOrdersSuccess', orders);
+    this.bus.emit("getOrdersSuccess", orders);
 
     return orders;
-  }
+  };
 
-  clear () {
+  clear() {
     // 如果构建一个新的缓存对象，直接 clear 即可 this.cache.clear();
-    this.cache.delete(OrderService.xxxKey)
+    this.cache.delete(OrderService.xxxKey);
   }
 }
 
@@ -199,15 +198,15 @@ class Controller {
   // 事件总线
   bus = createBus();
 
-  services: Record<string, BasicService> = {}
+  services: Record<string, BasicService> = {};
 
-  getService (serviceCls) {
+  getService(serviceCls) {
     // 类 name 为相同的名称
     const { name } = serviceCls;
     if (!this.services[name]) {
-        this.services[name] = new serviceCls(Controller.instance);
+      this.services[name] = new serviceCls(Controller.instance);
     }
-    return this.services[name]
+    return this.services[name];
   }
 }
 ```
@@ -215,14 +214,17 @@ class Controller {
 开发者可以在具体的代码中这样使用。
 
 ```typescript
-import Controller from '../../controller';
-import OrderService from './order-service'
+import Controller from "../../controller";
+import OrderService from "./order-service";
 
-// A 组件
+// A 页面
 const orderService = Controller.getInstance().getService(OrderService);
+const priceService = Controller.getInstance().getService(PriceService);
 
-// B 组件
+// B 页面都会使用同一个服务
 const orderService = Controller.getInstance().getService(OrderService);
 ```
 
 有同学可能会奇怪，为什么 Controller 不能直接导入或者自动注入 OrderService 呢。这样使用的原因是往往 Controller 和 BasicService 在基础类中，具体的业务类分布在各个业务代码中。
+
+这里没有使用任何依赖注入的框架，原因是因为如果引入了依赖注入会大大增加复杂度。同时前端的业务都是分散的，没有必要都放在一起。在组件需要使用到服务候才将其装载起来。
